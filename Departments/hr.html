@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Department</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background:linear-gradient(90deg,rgb(69, 81, 212),rgb(147, 203, 236),rgb(69, 81, 212)); /* Light purple background */
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color:white;
+            font-weight: bolder;
+            font-size:40px;
+        }
+        .table thead {
+            background-color: #000; /* Black table headers */
+            color: white;
+        }
+        .table thead th {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            background-color:black;
+            color: white;
+        }
+        .table tbody tr {
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .table tbody td, .table thead th {
+            border-radius: 5px;
+            vertical-align: middle;
+        }
+        .table tbody tr td:last-child {
+            border-bottom-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+        .action-icons {
+            display: none;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .action-icons i {
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .action-icons .edit-icon {
+            color: #28a745; /* Green */
+        }
+        .action-icons .delete-icon {
+            color: #dc3545; /* Red */
+        }
+        .table tbody tr:hover .action-icons {
+            display: flex;
+        }
+        .edit-form-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .employee.avatarUrl {
+    max-width: 100px;
+    border-radius: 50%;
+}
+
+tr{
+    background-color: white;
+}
+
+.employee {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: white; /* Ensures the entire block is white */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.employee img {
+    height: 70px;
+    width: 90px; /* Corrected from 'weight' to 'width' */
+    object-fit: contain;
+    display: block;
+    margin: 10px auto; /* Centers the image horizontally */
+    background-color: white; /* Ensures the image block is white */
+    padding: 10px;
+    border-radius: 50%; /* Optionally, make the image circular */
+}
+
+
+.Header {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centers the title */
+    position: relative;
+    padding: 10px 20px;
+    background-color:white;
+    height:75px;
+    color: black;
+}
+
+.left-section {
+    position: absolute;
+    /* height:500px; */
+    left: 20px; /* Adjust as needed */
+}
+
+.left-section i {
+    font-size: 24px;
+}
+.dropdown-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px; /* Adjust as needed */
+    height: 500px;
+    background-color: #333;
+    padding-top: 60px; /* Space for the icon */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    color: white;
+    background-color: #444;
+    border-bottom: 1px solid #555;
+}
+
+.dropdown-menu a:hover {
+    background-color: #555;
+}
+
+.left-section:hover .dropdown-menu,
+.dropdown-menu:hover {
+    display: flex;
+    height: 45rem;
+    background-color:black;
+}
+.title {
+    margin: 0;
+    font-size:3rem;
+    text-align: center;
+}
+
+ h1{
+    color:black;
+   
+    font-weight:bolder;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.right-section {
+    position: absolute;
+    right: 20px; /* Adjust as needed */
+}
+
+.add-employee {
+    background-color:#9c2ad9;
+    color:white;
+    border-radius: 10px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.add-employee:hover {
+    background-color: #0c0e0f;
+    color: white;
+}
+
+
+
+
+    </style>
+</head>
+<body>
+    <div class="Header">
+        <div class="left-section">
+           <i class="fa-solid fa-bars"></i>
+           <div class="dropdown-menu">
+               <a href="index.html">Home</a>
+               <a href="sales.html">Sales</a>
+               <a href="telecalling.html">Telecalling</a>
+               <a href="technical.html">Technical</a>
+               <a href="">Sign Out</a>
+           </div>
+        </div>
+       <h1 class="title">HR Department</h1>
+       <div class="right-section">
+       <div class="add-employee"><i class="fa-solid fa-user-plus"></i></div>
+       </div>
+   </div>
+    <div class="container">
+      
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Avatar</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>Gender</th>
+                    <th>Salary</th>
+                  
+                </tr>
+            </thead>
+            <tbody id="employeeTableBody">
+                <!-- Employee rows will be added here dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Edit Form Modal -->
+    <div class="overlay"></div>
+    <div class="edit-form-container">
+        <h4>Edit Employee</h4>
+        <form id="editEmployeeForm">
+            <div class="mb-3">
+                <label for="editName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="editName" required>
+            </div>
+            <div class="mb-3">
+                <label for="editEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="editEmail" required>
+            </div>
+            <div class="mb-3">
+                <label for="editContact" class="form-label">Contact</label>
+                <input type="text" class="form-control" id="editContact" required>
+            </div>
+            <div class="mb-3">
+                <label for="editGender" class="form-label">Gender</label>
+                <select class="form-select" id="editGender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="editSalary" class="form-label">Salary</label>
+                <input type="number" class="form-control" id="editSalary" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" id="cancelEdit">Cancel</button>
+        </form>
+    </div>
+
+
+    <!-- Add Employee Form Modal -->
+<div class="overlay"></div>
+<div class="edit-form-container" id="addEmployeeFormContainer">
+    <h4>Add Employee</h4>
+    <form id="addEmployeeForm">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="contact" class="form-label">Contact</label>
+            <input type="text" class="form-control" id="contact" required>
+        </div>
+        <div class="mb-3">
+            <label for="gender" class="form-label">Gender</label>
+            <select class="form-select" id="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="salary" class="form-label">Salary</label>
+            <input type="number" class="form-control" id="salary" required>
+        </div>
+        <div class="mb-3">
+            <label for="department" class="form-label">Department</label>
+            <select class="form-select" id="department" required>
+                <option value="HR">HR</option>
+                <option value="Sales">Sales</option>
+                <option value="Telecalling">Telecalling</option>
+                <option value="Technical">Technical</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Employee</button>
+        <button type="button" class="btn btn-secondary" id="cancelAdd">Cancel</button>
+    </form>
+</div>
+
+
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            const department = 'HR'; // Change this based on the department
+            let departmentData = JSON.parse(localStorage.getItem(department)) || [];
+            const tableBody = document.getElementById('employeeTableBody');
+            let currentEmail = '';
+
+           
+
+            function renderTable() {
+                tableBody.innerHTML = '';
+                departmentData.forEach(employee => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                      <td><img src="${employee.avatarUrl}" alt="${employee.name}'s Avatar " style="height:70px; width:70px; object-fit:contain;"></td>
+                        <td>${employee.name}</td>
+                        <td>${employee.email}</td>
+                        <td>${employee.contact}</td>
+                        <td>${employee.gender}</td>
+                        <td>${employee.salary}</td>
+                        <td class="action-icons">
+                            <i class="fas fa-edit edit-icon"></i>
+                            <i class="fas fa-trash-alt delete-icon"></i>
+                        </td>
+                    `;
+
+                    const editIcon = row.querySelector('.edit-icon');
+                    const deleteIcon = row.querySelector('.delete-icon');
+
+                    editIcon.addEventListener('click', () => openEditForm(employee));
+                    deleteIcon.addEventListener('click', () => deleteEmployee(employee.email));
+
+                    tableBody.appendChild(row);
+                });
+            }
+
+// ------------------------------------------------------------
+
+// Open Add Employee Form
+document.querySelector('.add-employee').addEventListener('click', function () {
+                document.querySelector('.overlay').style.display = 'block';
+                document.getElementById('addEmployeeFormContainer').style.display = 'block';
+            });
+
+            function closeAddForm() {
+                document.querySelector('.overlay').style.display = 'none';
+                document.getElementById('addEmployeeFormContainer').style.display = 'none';
+            }
+
+
+             // Fetch avatar based on gender
+    async function fetchAvatar(gender) {
+        const avatarApiUrl = `https://avatar.iran.liara.run/public/${gender}`;
+        const response = await fetch(avatarApiUrl);
+        if (response.ok) {
+            return response.url; // return the final URL of the avatar
+        } else {
+            console.error('Failed to fetch avatar:', response.status);
+            return ''; // return an empty string if there was an error
+        }
+    }
+
+
+
+            // Handle Add Employee Form Submission
+            document.getElementById('addEmployeeForm').addEventListener('submit',async function (event) {
+                event.preventDefault();
+
+                const newEmployee = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    contact: document.getElementById('contact').value,
+                    gender: document.getElementById('gender').value,
+                    salary: document.getElementById('salary').value,
+                    department: document.getElementById('department').value,
+                    avatarUrl: ''
+                };
+
+            // Generate Avatar based on Gender
+        const gender = newEmployee.gender.toLowerCase();
+        newEmployee.avatarUrl = await fetchAvatar(gender);
+
+                // Add the employee to the relevant department's local storage
+                let departmentEmployees = JSON.parse(localStorage.getItem(newEmployee.department)) || [];
+                departmentEmployees.push(newEmployee);
+                localStorage.setItem(newEmployee.department, JSON.stringify(departmentEmployees));
+
+                // If the current department is HR, render the employee in the UI
+                if (newEmployee.department === department) {
+                    departmentData.push(newEmployee);
+                    renderTable();
+                }
+
+                closeAddForm();
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // ----------------------------------------------------------
+
+            function openEditForm(employee) {
+                currentEmail = employee.email; // Store current email
+                document.getElementById('editEmail').value = employee.email;
+                document.getElementById('editName').value = employee.name;
+                document.getElementById('editContact').value = employee.contact;
+                document.getElementById('editGender').value = employee.gender;
+                document.getElementById('editSalary').value = employee.salary;
+
+                document.querySelector('.overlay').style.display = 'block';
+                document.querySelector('.edit-form-container').style.display = 'block';
+            }
+
+            function closeEditForm() {
+                document.querySelector('.overlay').style.display = 'none';
+                document.querySelector('.edit-form-container').style.display = 'none';
+            }
+
+            function deleteEmployee(email) {
+                departmentData = departmentData.filter(employee => employee.email !== email);
+                localStorage.setItem(department, JSON.stringify(departmentData));
+                renderTable();
+            }
+
+            document.getElementById('editEmployeeForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const updatedEmail = document.getElementById('editEmail').value;
+                const updatedEmployee = {
+                    name: document.getElementById('editName').value,
+                    email: updatedEmail,
+                    contact: document.getElementById('editContact').value,
+                    gender: document.getElementById('editGender').value,
+                    salary: document.getElementById('editSalary').value
+                };
+
+                // Find the index of the current employee and update
+                const index = departmentData.findIndex(employee => employee.email === currentEmail);
+                if (index !== -1) {
+                    departmentData[index] = updatedEmployee;
+                }
+
+                // Update the data in local storage
+                localStorage.setItem(department, JSON.stringify(departmentData));
+                closeEditForm();
+                renderTable();
+            });
+
+            document.getElementById('cancelEdit').addEventListener('click', closeEditForm);
+            document.querySelector('.overlay').addEventListener('click', closeEditForm);
+
+            renderTable();
+        });
+    </script>
+</body>
+</html>
